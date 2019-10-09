@@ -32,6 +32,8 @@ app.get('/',(req,res,next)=>{
 	res.sendFile(path.join(__dirname,'../client/loginApp/public/index.html'))
 })
 
+require('./routes/api/user.js')(app);
+
 //listen on port
 app.listen(port,()=>{
 	console.log(`Server is running on port: ${port}`);

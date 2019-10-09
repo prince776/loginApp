@@ -2,18 +2,103 @@ import React, {Component} from 'react'
 
 class Home extends Component{
 
+	state = {
+		isLoading:true,
+		token:'',
+		signUpMessage:'',
+		signUpEmail:'',
+		signUpPassword:'',
+		logMessage:''
+	}
+
+	componentDidMount(){
+		this.setState({
+			isLoading:false
+		});
+	}
+
+	//SignUp system
+	onSignUpEmailTextBoxChange = (e)=>{
+		this.setState({
+			signUpEmail:e.target.value
+		});
+	}
+
+	onSignUpPasswordTextBoxChange = (e)=>{
+		this.setState({
+			signUpPassword:e.target.value
+		});
+	}
+
+	onSignUp = ()=>{
+		console.log('startuibg');
+		const {signUpEmail,signUpPassword} = this.state;
+
+		this.setState({isLoading:true});
+
+		fetch('http://localhost:8080/api/account/signup'
+			,{	
+				method:'POST',
+				headers:{
+					'Content-Type':'application/json',
+					'Accept':'application/json'
+				},
+				body:JSON.stringify({
+					email:signUpEmail,
+					password:signUpPassword
+				})
+		}).then((res)=>  res.json()).then((json)=>{
+			console.log('JSON:');
+			console.log(json);
+
+			if(json.success){//successful sign up
+				this.setState({
+					signUpMessage:json.message,
+					isLoading:false,
+					signUpEmail:'',
+					signUpPassword:''
+				});
+			}else{
+				this.setState({
+					isLoading:false,
+					signUpMessage:json.message
+				});
+			}
+
+		});
+
+	}
+
+
 	render(){
+
+		const {
+			isLoading,
+			token,
+			signUpMessage,
+			signUpEmail,
+			signUpPassword,
+			logMessage
+		} = this.state;
+
+		if(isLoading){
+			return (<div><p>Loading......</p></div>);
+		}
+
 		return(
 
 			<div>
 				<div>
 					<h3>Sign Up</h3>
-					<input type = 'email' placeholder = 'Email'/>
+					<input type = 'email' placeholder = 'Email'
+					 onChange = {this.onSignUpEmailTextBoxChange}/>
 					<br/>
-					<input type = 'password' placeholder = 'Password'/>
+					<input type = 'password' placeholder = 'Password'
+					onChange = {this.onSignUpPasswordTextBoxChange}/>
 					<br/>
 
-					<button>Sign Up</button>
+					<button onClick = {this.onSignUp}>Signn Up </button>
+					<p>{signUpMessage}</p>
 				</div>
 			</div>
 		)
