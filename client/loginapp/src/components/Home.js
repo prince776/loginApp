@@ -17,7 +17,8 @@ class Home extends Component{
 
 	componentDidMount(){
 		this.setState({
-			isLoading:false
+			isLoading:false,
+			token:localStorage.getItem('signInToken')
 		});
 	}
 
@@ -108,6 +109,8 @@ class Home extends Component{
 						signInPassword:'',
 						token:json.token
 					});
+					//put token in local storage
+					localStorage.setItem('signInToken',json.token);
 				}else{
 					this.setState({
 						isLoading:false,
@@ -165,6 +168,10 @@ class Home extends Component{
 					token:token
 				})
 			}).then((res)=>res.json()).then((json)=>{
+				
+				if(json.success){
+					localStorage.removeItem('signInToken');
+				}
 				this.setState({
 					isLoading:false,
 					logOutMessage:json.message
