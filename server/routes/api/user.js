@@ -10,7 +10,6 @@ var sendError = (res,error)=>{
 module.exports = (app)=>{
 
 	app.post('/api/account/signup',(req,res)=>{
-		console.log("signup route accessed");
 		var {body} = req;
 		var {email} = body;
 		var {password} = body;
@@ -55,7 +54,6 @@ module.exports = (app)=>{
 	});
 
 	app.post('/api/account/signin',(req,res)=>{
-		console.log('signing in commenced')
 		const {body} = req;
 		var {email,password} = body;
 
@@ -76,7 +74,6 @@ module.exports = (app)=>{
 			if(err){
 				return sendError(res,'Server error');
 			}
-			console.log(previousUsers[0].email);
 			if(previousUsers.length < 1){
 				return sendError(res,'Email not found');
 			}
@@ -100,6 +97,35 @@ module.exports = (app)=>{
 					message:"Signed in!",
 					token:doc._id//will be used by browser to auto login
 				});
+			});
+
+		});
+
+	});
+
+	app.post('/api/account/verify',(req,res) => {
+		const {body} = req;
+		const {token} = body;
+
+		if(!token){
+			return sendError(res,"No session found");
+		}
+
+		UserSession.find({
+			_id:token,
+			isDeleted:false
+		},(err,prevSessions)=>{
+			if(err){
+				return sendError(res,'Server error')
+			}
+			if(prevSessions.length < 1){
+				return sendError(res,'Invalid session! Please sign in again')
+			}
+
+			//if sesssion is found and isn't deleted
+			return res.send({
+				success:true,
+				message:"Session refreshed, ur signed in now."
 			});
 
 		});

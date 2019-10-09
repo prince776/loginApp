@@ -10,7 +10,8 @@ class Home extends Component{
 		signUpPassword:'',
 		signInMessage:'',
 		signInEmail:'',
-		signInPassword:''
+		signInPassword:'',
+		verificationMessage:'',
 	}
 
 	componentDidMount(){
@@ -53,21 +54,12 @@ class Home extends Component{
 			console.log('JSON:');
 			console.log(json);
 
-			if(json.success){//successful sign up
-				this.setState({
+			this.setState({
 					signUpMessage:json.message,
 					isLoading:false,
 					signUpEmail:'',
 					signUpPassword:''
-				});
-			}else{
-				this.setState({
-					isLoading:false,
-					signUpMessage:json.message,
-					signUpEmail:'',
-					signUpPassword:''
-				});
-			}
+			});
 
 		});
 
@@ -128,6 +120,31 @@ class Home extends Component{
 
 	}
 
+	onVerify = ()=>{
+		const {token} = this.state;
+
+		this.setState({
+			isLoading:true
+		});
+
+		fetch('http://localhost:8080/api/account/verify'
+			,{
+				method:'POST',
+				headers:{
+					'Content-Type':'application/json',
+					'Accept':'application/json'
+				},
+				body:JSON.stringify({
+					token:token
+				})
+			}).then((res)=> res.json()).then((json)=>{
+				this.setState({
+					verificationMessage:json.message,
+					isLoading:false,
+				});
+			});
+
+	}
 
 	render(){
 
@@ -139,7 +156,8 @@ class Home extends Component{
 			signUpPassword,
 			signInEmail,
 			signInPassword,
-			signInMessage
+			signInMessage,
+			verificationMessage
 		} = this.state;
 
 		if(isLoading){
@@ -161,6 +179,7 @@ class Home extends Component{
 					<button onClick = {this.onSignUp}>Sign Up </button>
 					<p>{signUpMessage}</p>
 				</div>
+				
 				<hr/>
 
 				<div>
@@ -176,6 +195,13 @@ class Home extends Component{
 					<p>{signInMessage}</p>
 				</div>
 
+				<hr/>
+
+				<div>
+				<h4>Already Signed in? Click to refresh session</h4>
+				<button onClick = {this.onVerify}>Auto Sign In</button>
+				<p>{verificationMessage}</p>
+				</div>
 
 			</div>
 		)
