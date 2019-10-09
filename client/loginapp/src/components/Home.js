@@ -8,7 +8,9 @@ class Home extends Component{
 		signUpMessage:'',
 		signUpEmail:'',
 		signUpPassword:'',
-		logMessage:''
+		signInMessage:'',
+		signInEmail:'',
+		signInPassword:''
 	}
 
 	componentDidMount(){
@@ -61,11 +63,68 @@ class Home extends Component{
 			}else{
 				this.setState({
 					isLoading:false,
-					signUpMessage:json.message
+					signUpMessage:json.message,
+					signUpEmail:'',
+					signUpPassword:''
 				});
 			}
 
 		});
+
+	}
+
+	//SignIn system
+	onSignInEmailTextBoxChange = (e)=>{
+		this.setState({
+			signInEmail:e.target.value
+		});
+	}
+	
+	onSignInPasswordTextBoxChange = (e)=>{
+		this.setState({
+			signInPassword:e.target.value
+		});
+	}
+
+	onSignIn = ()=>{
+		const {signInEmail,signInPassword} = this.state;
+
+		this.setState({
+			isLoading:true
+		});
+
+		fetch('http://localhost:8080/api/account/signin'
+			,{
+				method:'POST',
+				headers:{
+					'Content-Type':'application/json',
+					'Accept':'application/json'
+				},
+				body:JSON.stringify({
+					email:signInEmail,
+					password:signInPassword
+				})
+			}).then((res)=> res.json()).then((json)=>{
+				console.log(json.token);
+
+				if(json.success){
+					this.setState({
+						isLoading:false,
+						signInMessage:json.message,
+						signInEmail:'',
+						signInPassword:'',
+						token:json.token
+					});
+				}else{
+					this.setState({
+						isLoading:false,
+						signInMessage:json.message,
+						signInEmail:'',
+						signInPassword:''
+					});
+				}
+
+			});
 
 	}
 
@@ -78,7 +137,9 @@ class Home extends Component{
 			signUpMessage,
 			signUpEmail,
 			signUpPassword,
-			logMessage
+			signInEmail,
+			signInPassword,
+			signInMessage
 		} = this.state;
 
 		if(isLoading){
@@ -97,9 +158,25 @@ class Home extends Component{
 					onChange = {this.onSignUpPasswordTextBoxChange}/>
 					<br/>
 
-					<button onClick = {this.onSignUp}>Signn Up </button>
+					<button onClick = {this.onSignUp}>Sign Up </button>
 					<p>{signUpMessage}</p>
 				</div>
+				<hr/>
+
+				<div>
+					<h3>Already registered? Sign in</h3>
+					<input type = 'email' placeholder = 'Email'
+					 onChange = {this.onSignInEmailTextBoxChange}/>
+					<br/>
+					<input type = 'password' placeholder = 'Password'
+					onChange = {this.onSignInPasswordTextBoxChange}/>
+					<br/>
+
+					<button onClick = {this.onSignIn}>Sign In </button>
+					<p>{signInMessage}</p>
+				</div>
+
+
 			</div>
 		)
 	}
