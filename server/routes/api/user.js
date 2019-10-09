@@ -66,7 +66,6 @@ module.exports = (app)=>{
 
 		email = email.toLowerCase();
 		email = email.trim();
-		console.log(email)
 
 		User.find({
 			email:email
@@ -129,6 +128,37 @@ module.exports = (app)=>{
 			});
 
 		});
+
+	});
+
+	app.post('/api/account/logout',(req,res)=>{
+		const {body} = req;
+		const {token} = body;
+
+		if(!token){
+			return sendError(res,"No session found, can't log out");
+		}
+
+		UserSession.findOneAndUpdate({
+			_id:token,
+			isDeleted:false
+		},{
+			$set:{isDeleted:true}
+		},null,(err,prevSession)=>{
+			if(err){
+				return sendError(res,"Server error");
+			}
+			if(!prevSession){
+				return sendError(res,"No session found, can't log out");
+			}
+
+			return res.send({
+				success:true,
+				message:"Session logged out"
+			});
+
+		});
+
 
 	});
 

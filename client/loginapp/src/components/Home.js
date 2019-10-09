@@ -12,6 +12,7 @@ class Home extends Component{
 		signInEmail:'',
 		signInPassword:'',
 		verificationMessage:'',
+		logOutMessage:''
 	}
 
 	componentDidMount(){
@@ -146,6 +147,32 @@ class Home extends Component{
 
 	}
 
+	onLogout = ()=>{
+		const {token} = this.state;
+
+		this.setState({
+			isLoading:true
+		});
+
+		fetch("http://localhost:8080/api/account/logout"
+			,{
+				method:'POST',
+				headers:{
+					'Content-Type':'application/json',
+					'Accept':'application/json'
+				},
+				body:JSON.stringify({
+					token:token
+				})
+			}).then((res)=>res.json()).then((json)=>{
+				this.setState({
+					isLoading:false,
+					logOutMessage:json.message
+				});
+			});
+
+	}
+
 	render(){
 
 		const {
@@ -157,7 +184,8 @@ class Home extends Component{
 			signInEmail,
 			signInPassword,
 			signInMessage,
-			verificationMessage
+			verificationMessage,
+			logOutMessage
 		} = this.state;
 
 		if(isLoading){
@@ -198,10 +226,17 @@ class Home extends Component{
 				<hr/>
 
 				<div>
-				<h4>Already Signed in? Click to refresh session</h4>
-				<button onClick = {this.onVerify}>Auto Sign In</button>
-				<p>{verificationMessage}</p>
+					<h4>Already Signed in? Click to refresh session</h4>
+					<button onClick = {this.onVerify}>Auto Sign In</button>
+					<p>{verificationMessage}</p>
 				</div>
+
+				<hr/>
+				<div>
+					<button onClick={this.onLogout}>Log out</button>
+					<p>{logOutMessage}</p>
+				</div>
+
 
 			</div>
 		)
