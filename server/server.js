@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const config = require('../config/config.js');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 //here do mongoose connection
 mongoose.connect(config.mongodb,(err,docs)=>{
@@ -18,11 +18,19 @@ mongoose.connect(config.mongodb,(err,docs)=>{
 
 mongoose.Promise = global.Promise;
 
+
 const app = express();
 
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cors());
+
+app.use(express.static(path.join(__dirname,'../client/loginApp/public')));
+
+//default route
+app.get('/',(req,res,next)=>{
+	res.sendFile(path.join(__dirname,'../client/loginApp/public/index.html'))
+})
 
 //listen on port
 app.listen(port,()=>{
