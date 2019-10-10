@@ -1,13 +1,16 @@
 import React from 'react';
 import './App.css';
-import Home from './components/Home.js';
+import Navbar from'./components/Navbar/Navbar.js';
+import Main from './Main.js'
 
 function App(){
     return(
 
       <div className = "App">
-        <h1>Login App</h1>
-        <Home />
+        <h1>Social Networking Site</h1>
+        <Navbar />
+        <hr/>
+        <Main/>
       </div>
 
     );
