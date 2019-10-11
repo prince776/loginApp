@@ -13,6 +13,7 @@ class Navbar extends Component{
         <ul>
           <li><NavLink to='/'>Home</NavLink></li>
           <li><NavLink to='/profile'>Profile</NavLink></li>
+          <li><NavLink to='/test'>Test</NavLink></li>
         </ul>
       </nav>
 

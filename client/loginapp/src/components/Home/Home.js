@@ -20,6 +20,7 @@ class Home extends Component{
 			isLoading:false,
 			token:localStorage.getItem('signInToken')
 		});
+		
 	}
 
 	//SignUp system
@@ -53,8 +54,6 @@ class Home extends Component{
 					password:signUpPassword
 				})
 		}).then((res)=>  res.json()).then((json)=>{
-			console.log('JSON:');
-			console.log(json);
 
 			this.setState({
 					signUpMessage:json.message,
