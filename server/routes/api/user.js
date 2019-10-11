@@ -13,6 +13,7 @@ module.exports = (app)=>{
 		var {body} = req;
 		var {email} = body;
 		var {password} = body;
+		var {username} = body;
 
 		if(!email){//validate email
 			return sendError(res,'Email can\'t be blank');
@@ -20,9 +21,14 @@ module.exports = (app)=>{
 		if(!password){//validate password
 			return sendError(res,'Password can\'t be blank');
 		}
+		if(!username){
+			return sendError(res,'Username can\'t be blank');
+		}
 
 		email = email.toLowerCase();
 		email = email.trim();
+
+		username = username.trim();
 
 		//verify email doesn't already exists
 
@@ -31,14 +37,14 @@ module.exports = (app)=>{
 		},(err,previousUsers)=>{
 			if(err){ return sendError(res,"Server error");}
 			else if(previousUsers.length > 0) {
-				return sendError(res,'Email already exists');
+				return sendError(res,'Email already registered');
 			}
 			
 			//Now add user
 			const newUser = User();
 			newUser.email = email;
 			newUser.password = newUser.generateHash(password);
-
+			newUser.username = username;
 			//save this user
 			newUser.save((err,user)=>{
 				if(err) return sendError('Server error');
@@ -50,7 +56,6 @@ module.exports = (app)=>{
 				}
 			});
 		})
-
 	});
 
 	app.post('/api/account/signin',(req,res)=>{
@@ -195,7 +200,7 @@ module.exports = (app)=>{
 
 				return res.send({
 					success:true,
-					userName: "TODO: add username in User model and input of sign up",
+					userName: user.username,
 					userEmail: user.email,
 					userSignUpDate: user.signUpDate,
 					message:'Account data loaded successfully'

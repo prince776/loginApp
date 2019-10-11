@@ -7,6 +7,7 @@ class Home extends Component{
 		token:'',
 		signUpMessage:'',
 		signUpEmail:'',
+		signUpUsername:'',
 		signUpPassword:'',
 		signInMessage:'',
 		signInEmail:'',
@@ -36,9 +37,14 @@ class Home extends Component{
 		});
 	}
 
+	onSignUpUsernameTextBoxChange = (e) =>{
+		this.setState({
+			signUpUsername:e.target.value
+		});
+	}
+
 	onSignUp = ()=>{
-		console.log('startuibg');
-		const {signUpEmail,signUpPassword} = this.state;
+		const {signUpEmail,signUpPassword,signUpUsername} = this.state;
 
 		this.setState({isLoading:true});
 
@@ -51,7 +57,8 @@ class Home extends Component{
 				},
 				body:JSON.stringify({
 					email:signUpEmail,
-					password:signUpPassword
+					password:signUpPassword,
+					username:signUpUsername
 				})
 		}).then((res)=>  res.json()).then((json)=>{
 
@@ -59,7 +66,8 @@ class Home extends Component{
 					signUpMessage:json.message,
 					isLoading:false,
 					signUpEmail:'',
-					signUpPassword:''
+					signUpPassword:'',
+					signUpUsername:''
 			});
 
 		});
@@ -205,6 +213,9 @@ class Home extends Component{
 					<h3>Sign Up</h3>
 					<input type = 'email' placeholder = 'Email'
 					 onChange = {this.onSignUpEmailTextBoxChange}/>
+					<br/>
+					<input type = 'text' placeholder = 'Name'
+					 onChange = {this.onSignUpUsernameTextBoxChange}/>
 					<br/>
 					<input type = 'password' placeholder = 'Password'
 					onChange = {this.onSignUpPasswordTextBoxChange}/>

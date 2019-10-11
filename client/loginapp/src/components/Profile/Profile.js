@@ -3,30 +3,27 @@ import { Redirect } from 'react-router-dom'
 
 class Profile extends Component{
 	state={
-		isLoading:false,
-		userName:'',
-		userSignUpDate:'',
-		userEmail:'',
-		token:'-1',
-		message:'',
-		redirect:''
-	};
+			isLoading:true,
+			userName:'',
+			userSignUpDate:'',
+			userEmail:'',
+			token:(localStorage.getItem('signInToken') ? localStorage.getItem('signInToken'):'-1'),
+			message:'',
+			redirect:'',
+			begin:false
+		};	
 
 	componentDidMount(){
-
 		this.setState({
 			isLoading:true,
-			token:localStorage.getItem('signInToken')
+			being:true
 		});
-
 	}
 
 	render(){
 
-		const {redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
-
+		const {begin,redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
 		if(!userName && token){ //if there is no user and token is succesfully loaded from local storage
-			
 			fetch('http://localhost:8080/api/account/profile'
 				,{	
 					method:'POST',
@@ -58,12 +55,14 @@ class Profile extends Component{
 			});
 		}	
 
-		if(isLoading){
-			return (<div><p>Loading......</p></div>);
-		}
+		
 
 		if(redirect){
 			return <Redirect to = {redirect} / >;
+		}
+
+		if(isLoading){
+			return (<div><p>Loading......</p></div>);
 		}
 
 		return(
