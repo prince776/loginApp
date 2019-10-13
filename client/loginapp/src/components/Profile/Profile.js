@@ -14,7 +14,10 @@ class Profile extends Component{
 			message:'',
 			redirect:'',
 			editProfile:false,
-			profileImg:''
+			profileImg:'',
+			address:'',
+			workplace:'',
+			work:'',
 		};	
 
 	componentDidMount(){
@@ -61,7 +64,7 @@ class Profile extends Component{
 
 	render(){
 
-		const {profileImg,editProfile,redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
+		const {address,workplace,work,profileImg,editProfile,redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
 		
 		if(!userName && token){ //if there is no user and token is succesfully loaded from local storage
 			fetch('http://localhost:8080/api/account/profile'
@@ -83,7 +86,10 @@ class Profile extends Component{
 						userEmail : json.userEmail,
 						isLoading : false,
 						message:json.message,
-						profileImg:json.profileImg
+						profileImg:json.profileImg,
+						address:json.address,
+						work:json.work,
+						workplace:json.workplace
 					});
 				}else{//redirect becoz no session
 					this.setState({
@@ -111,6 +117,14 @@ class Profile extends Component{
 				<h4>Name: {userName}</h4>
 				<h4>Email: {userEmail}</h4>
 				<h4>SignUp Date: {userSignUpDate}</h4>
+				
+					<h4>Adress: {address}</h4>
+					<h4>Work: {work}</h4>
+					<h4>Workplace: {workplace}</h4>
+					<br/>
+					<hr/>
+					<br/>
+
 				<button onClick = {this.onSignOut}>Log Out</button><br/><br/>
 				<button onClick = {this.onEditProfile} > Edit Profile</button>
 				

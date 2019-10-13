@@ -25,6 +25,18 @@ const UserSchema = new mongoose.Schema({
 	profileImg:{
 		type:String,
 		default:''
+	},
+	address:{
+		type:String,
+		default:''
+	},
+	work:{
+		type:String,
+		default:''
+	},
+	workplace:{
+		type:String,
+		default:''
 	}
 });
 

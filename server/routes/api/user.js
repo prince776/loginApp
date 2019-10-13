@@ -168,54 +168,5 @@ module.exports = (app)=>{
 		});
 
 	});
-
-	app.post('/api/account/profile',(req,res)=>{
-		const {body} = req;
-		const {token} = body;
-
-		if(!token){
-			return sendError(res,"Invalid Session (no Token)");
-		}
-
-		UserSession.find({
-			_id:token,
-			isDeleted:false
-		},(err,previousSessions)=>{
-			if(err){
-				return sendError(res,err);
-			}else if(previousSessions.length < 1){
-				return sendError(res,"Invalid Session(user session.find else");
-			}
-
-			const userID = previousSessions[0].userID;
-
-			User.find({
-				_id:userID,
-				isDeleted:false	
-			},(err,previousUsers)=>{
-				if(err){
-					return sendError(res,"Server Error(user.find if err)");
-				}else if(previousUsers.length < 1){
-					return sendError(res,"Invalid User(user.find else)");
-				}
-
-				const user = previousUsers[0];
-
-				return res.send({
-					success:true,
-					userName: user.username,
-					userEmail: user.email,
-					userSignUpDate: user.signUpDate,
-					message:'Account data loaded successfully',
-					profileImg: user.profileImg
-				});
-
-			});
-
-		});
-
-	});
-
-	
 	
 };
