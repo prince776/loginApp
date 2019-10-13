@@ -111,7 +111,6 @@ class Profile extends Component{
 				<h4>Name: {userName}</h4>
 				<h4>Email: {userEmail}</h4>
 				<h4>SignUp Date: {userSignUpDate}</h4>
-				<h4>{message}</h4>
 				<button onClick = {this.onSignOut}>Log Out</button><br/><br/>
 				<button onClick = {this.onEditProfile} > Edit Profile</button>
 				
