@@ -1,5 +1,6 @@
 import React , {Component} from 'react';
 import FileBase64 from 'react-file-base64';
+import './ProfileEdit.css'
 
 class ProfileEdit extends Component{
 
@@ -47,7 +48,7 @@ class ProfileEdit extends Component{
 					<p>Upload Profile Image: </p>
 					
 					<FileBase64 type = "file" multiple = {false} onDone = {this.getBaseFile.bind(this)} />
-					<img src = {baseImage} />
+					<img className = 'profileImg' src = {baseImage} />
 
 					</div>
 

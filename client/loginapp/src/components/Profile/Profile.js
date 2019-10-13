@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import { Redirect } from 'react-router-dom'
 import ProfileEdit from './ProfileEdit.js'
 
+import './Profile.css'
+
 class Profile extends Component{
 	state={
 			isLoading:true,
@@ -12,6 +14,7 @@ class Profile extends Component{
 			message:'',
 			redirect:'',
 			editProfile:false,
+			profileImg:''
 		};	
 
 	componentDidMount(){
@@ -58,7 +61,7 @@ class Profile extends Component{
 
 	render(){
 
-		const {editProfile,redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
+		const {profileImg,editProfile,redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
 		
 		if(!userName && token){ //if there is no user and token is succesfully loaded from local storage
 			fetch('http://localhost:8080/api/account/profile'
@@ -79,7 +82,8 @@ class Profile extends Component{
 						userSignUpDate : json.userSignUpDate,
 						userEmail : json.userEmail,
 						isLoading : false,
-						message:json.message
+						message:json.message,
+						profileImg:json.profileImg
 					});
 				}else{//redirect becoz no session
 					this.setState({
@@ -103,6 +107,7 @@ class Profile extends Component{
 			<div>
 			<h3>Profile Page</h3>
 			<br/>
+				<img src ={profileImg} className = 'profileImg'/>
 				<h4>Name: {userName}</h4>
 				<h4>Email: {userEmail}</h4>
 				<h4>SignUp Date: {userSignUpDate}</h4>

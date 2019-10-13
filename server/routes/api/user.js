@@ -206,7 +206,8 @@ module.exports = (app)=>{
 					userName: user.username,
 					userEmail: user.email,
 					userSignUpDate: user.signUpDate,
-					message:'Account data loaded successfully'
+					message:'Account data loaded successfully',
+					profileImg: user.profileImg
 				});
 
 			});

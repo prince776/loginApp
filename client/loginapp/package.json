@@ -6,6 +6,7 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-file-base64": "^1.0.3",
+    "react-image": "^2.2.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0"
   },

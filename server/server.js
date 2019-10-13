@@ -22,10 +22,11 @@ mongoose.Promise = global.Promise;
 const app = express();
 
 app.use(express.urlencoded({extended:true}));
-app.use(express.json());
+app.use(express.json({limit:'50mb'}));//increase payload size to accept image data
 app.use(cors());
 app.use('/uploads',express.static('uploads'));
 app.use(express.static(path.join(__dirname,'../client/loginApp/public')));
+//make sure done after app.use(express.json());
 
 //default route
 app.get('/',(req,res,next)=>{
