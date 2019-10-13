@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { Redirect } from 'react-router-dom'
+import ProfileEdit from './ProfileEdit.js'
 
 class Profile extends Component{
 	state={
@@ -10,12 +11,19 @@ class Profile extends Component{
 			token:(localStorage.getItem('signInToken') ? localStorage.getItem('signInToken'):'-1'),
 			message:'',
 			redirect:'',
+			editProfile:false,
 		};	
 
 	componentDidMount(){
 		this.setState({
 			isLoading:true,
 		});
+	}
+
+	onEditProfile = ()=>{
+		this.setState({
+			editProfile:true
+		})
 	}
 
 	onSignOut = ()=>{
@@ -50,7 +58,7 @@ class Profile extends Component{
 
 	render(){
 
-		const {redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
+		const {editProfile,redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
 		
 		if(!userName && token){ //if there is no user and token is succesfully loaded from local storage
 			fetch('http://localhost:8080/api/account/profile'
@@ -66,7 +74,6 @@ class Profile extends Component{
 			}).then((res)=>  res.json()).then((json)=>{
 
 				if(json.success){
-					console.log("success");					
 					this.setState({
 						userName : json.userName,
 						userSignUpDate : json.userSignUpDate,
@@ -100,8 +107,13 @@ class Profile extends Component{
 				<h4>Email: {userEmail}</h4>
 				<h4>SignUp Date: {userSignUpDate}</h4>
 				<h4>{message}</h4>
-				<button onClick = {this.onSignOut}>Log Out</button>
+				<button onClick = {this.onSignOut}>Log Out</button><br/><br/>
+				<button onClick = {this.onEditProfile} > Edit Profile</button>
+				
+				<ProfileEdit shouldEditProfile = { editProfile }  signInToken = {token}/>
+
 			</div>
+
 		);
 	}
 

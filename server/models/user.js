@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema({
 	username:{
 		type:String,
 		default:''
+	},
+	profileImg:{
+		type:String,
+		default:''
 	}
 });
 

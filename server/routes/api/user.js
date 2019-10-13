@@ -1,11 +1,14 @@
 var User = require('../../models/user.js');
 var UserSession = require('../../models/userSession.js');
+
 var sendError = (res,error)=>{
 	return res.send({
 		success:false,
 		message:'Error: ' + error + "!"
 	})
 }
+
+
 
 module.exports = (app)=>{
 
@@ -212,4 +215,6 @@ module.exports = (app)=>{
 
 	});
 
+	
+	
 };

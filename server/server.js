@@ -24,7 +24,7 @@ const app = express();
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cors());
-
+app.use('/uploads',express.static('uploads'));
 app.use(express.static(path.join(__dirname,'../client/loginApp/public')));
 
 //default route
@@ -33,7 +33,7 @@ app.get('/',(req,res,next)=>{
 })
 
 require('./routes/api/user.js')(app);
-
+require('./routes/api/userProfile.js')(app);
 //listen on port
 app.listen(port,()=>{
 	console.log(`Server is running on port: ${port}`);
