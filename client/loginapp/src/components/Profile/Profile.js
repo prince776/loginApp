@@ -10,19 +10,48 @@ class Profile extends Component{
 			token:(localStorage.getItem('signInToken') ? localStorage.getItem('signInToken'):'-1'),
 			message:'',
 			redirect:'',
-			begin:false
 		};	
 
 	componentDidMount(){
 		this.setState({
 			isLoading:true,
-			being:true
 		});
+	}
+
+	onSignOut = ()=>{
+		const {token} = this.state;
+
+		this.setState({
+			isLoading:true
+		});
+
+		fetch("http://localhost:8080/api/account/signout"
+			,{
+				method:'POST',
+				headers:{
+					'Content-Type':'application/json',
+					'Accept':'application/json'
+				},
+				body:JSON.stringify({
+					token:token
+				})
+			}).then((res)=>res.json()).then((json)=>{
+				
+				if(json.success){
+					localStorage.removeItem('signInToken');
+				}
+				this.setState({
+					isLoading:false,
+					redirect:'/'
+				});
+			});
+
 	}
 
 	render(){
 
-		const {begin,redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
+		const {redirect,token,isLoading,message,userName,userEmail,userSignUpDate} = this.state;
+		
 		if(!userName && token){ //if there is no user and token is succesfully loaded from local storage
 			fetch('http://localhost:8080/api/account/profile'
 				,{	
@@ -55,8 +84,6 @@ class Profile extends Component{
 			});
 		}	
 
-		
-
 		if(redirect){
 			return <Redirect to = {redirect} / >;
 		}
@@ -72,7 +99,8 @@ class Profile extends Component{
 				<h4>Name: {userName}</h4>
 				<h4>Email: {userEmail}</h4>
 				<h4>SignUp Date: {userSignUpDate}</h4>
-				<h3>{message}</h3>
+				<h4>{message}</h4>
+				<button onClick = {this.onSignOut}>Log Out</button>
 			</div>
 		);
 	}

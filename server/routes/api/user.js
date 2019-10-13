@@ -136,7 +136,7 @@ module.exports = (app)=>{
 
 	});
 
-	app.post('/api/account/logout',(req,res)=>{
+	app.post('/api/account/signout',(req,res)=>{
 		const {body} = req;
 		const {token} = body;
 
@@ -154,12 +154,12 @@ module.exports = (app)=>{
 				return sendError(res,"Server error");
 			}
 			if(!prevSession){
-				return sendError(res,"No session found, can't log out");
+				return sendError(res,"No session found, can't sign out");
 			}
 
 			return res.send({
 				success:true,
-				message:"Session logged out"
+				message:"Session signed out"
 			});
 
 		});

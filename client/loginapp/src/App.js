@@ -3,8 +3,6 @@ import './App.css';
 import Navbar from'./components/Navbar/Navbar.js';
 import Main from './Main.js'
 
-var userToken = React.createContext('-1');
-
 function App(){
     return(
 
