@@ -6,9 +6,7 @@ var sendError = (res,error)=>{
 		success:false,
 		message:'Error: ' + error + "!"
 	})
-}
-
-
+} 
 
 module.exports = (app)=>{
 

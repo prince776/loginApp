@@ -37,7 +37,14 @@ const UserSchema = new mongoose.Schema({
 	workplace:{
 		type:String,
 		default:''
-	}
+	},
+	isVerified:{
+		type:Boolean,
+		default:false
+	},
+	friendList:[{
+		type:String
+	}]
 });
 
 //methods

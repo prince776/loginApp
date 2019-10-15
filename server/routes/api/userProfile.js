@@ -1,40 +1,45 @@
 var User = require('../../models/user.js');
 var UserSession = require('../../models/userSession.js');
-// var multer = require('multer');
+var nodemailer = require('nodemailer')
+var smtpTransport = require('nodemailer-smtp-transport');
+var xoauth2 = require('xoauth2');
 
 var sendError = (res,error)=>{
 	return res.send({
 		success:false,
 		message:'Error: ' + error + "!"
 	})
+} 
+
+//TODO:make this var locally global
+var verficationCode = "";
+
+function sendMail(targetEmail,subject,text) {
+
+	var transporter = nodemailer.createTransport(smtpTransport({
+		 service: 'gmail',
+		 host: 'smtp.gmail.com',
+		 auth: {
+		    user: 'accverf007@gmail.com',
+		    pass: 'accountverifier007'
+		 }
+	}));
+
+	var mailOptions = {
+		from : 'accverf007@gmail.com',
+		to: targetEmail,
+		subject: subject,
+		text:text
+	};
+
+	transporter.sendMail(mailOptions,(err,info)=>{
+		if(err){
+			console.log(err);
+		}
+		
+	});
+
 }
-
-// //Multer stuff
-// const storage = multer.diskStorage({
-// 	destination: (req,file,cb)=>{
-// 		 cb(null,'./uploads/');
-// 	},
-// 	filename: (req,file,cb)=>{
-// 		cb(null,Date.now()+file.originalname);
-// 	}
-
-// });
-
-// const fileFilter = (req,file,cb)=>{
-// 	if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg'){
-// 		cb(null,true);//store
-// 	}else{
-// 		cb(null,false);//reject
-// 	}
-// }
-
-// const upload = multer({
-// 	storage:storage,
-// 	limits:{
-// 		fileSize:1024*1024*5
-// 	},
-// 	fileFilter:fileFilter
-// });
 
 module.exports = (app)=>{
 	
@@ -79,7 +84,8 @@ module.exports = (app)=>{
 					profileImg: user.profileImg,
 					address:user.address,
 					work:user.work,
-					workplace:user.workplace
+					workplace:user.workplace,
+					isVerified:user.isVerified,
 				});
 
 			});
@@ -87,8 +93,6 @@ module.exports = (app)=>{
 		});
 
 	});
-
-	
 
 	app.route('/api/account/profile/imageUpload')
 		.post((req,res,next) =>{
@@ -143,8 +147,7 @@ module.exports = (app)=>{
 
 		});
 		
-
-		app.post('/api/account/profile/profileData' ,(req,res) =>{
+	app.post('/api/account/profile/profileData' ,(req,res) =>{
 			var {body} = req;
 			var {token,username,address,work,workplace} = body;
 			console.log(username);
@@ -210,5 +213,58 @@ module.exports = (app)=>{
 
 			});
 		});
+
+	app.post('/api/account/profile/reqVerificationCode', (req,res) => {
+		var {body} = req;
+		var {email} = body;
+		email = email.trim();
+
+
+		var code = Math.random()*10000;
+		code = Math.floor(code);
+		verficationCode = code + "";
+		console.log(verficationCode);
+		sendMail(email,"Verification code" , verficationCode);
+		
+
+	});
+
+	
+
+	app.post('/api/account/profile/verifyEmail',(req,res)=>{
+		var {body} = req;
+		var {code,email} = body;
+
+		if(code === verficationCode){
+			
+			User.find({
+				email:email
+			},(err,previousUsers)=>{
+				if(err){
+					return sendError(res,"Server Error");
+				}else if(previousUsers.length < 1){
+					return sendError(res,"Email not found");
+				}
+
+				var user = previousUsers[0];
+				user.isVerified = true;
+
+				user.save((err,doc)=>{
+					if(err){
+						return sendError(res,"Error saving user to DB");
+					}
+				});
+
+			});
+
+			return res.send({
+				success:true,
+				message:'Email Verified successfully'
+			});
+		}else{
+			return sendError(res,"Wrong VerificationCode");
+		}
+
+	});
 
 }

@@ -1,4 +1,5 @@
 import React , {Component} from 'react';
+import {Redirect} from 'react-router-dom';
 import FileBase64 from 'react-file-base64';
 import './ProfileEdit.css'
 
@@ -11,6 +12,7 @@ class ProfileEdit extends Component{
 		work:'',
 		workplace:'',
 		imagesStatus:'',
+		redirect:''
 	};
 
 	componentDidMount(){
@@ -80,8 +82,11 @@ class ProfileEdit extends Component{
 					workplace:workplace
 				})
 			}).then((res)=>res.json()).then((json)=>{
-				console.log('message')
-				console.log(json.message);
+				if(json.success){
+					this.setState({
+						redirect:'/profile'
+					})
+				}
 		});
 	}
 
@@ -89,7 +94,11 @@ class ProfileEdit extends Component{
 
 	render(){
 
-			var {baseImage,username,address,work,workplace} = this.state;
+			var {redirect,baseImage,username,address,work,workplace} = this.state;
+
+			if(redirect){
+				return <Redirect to={redirect} />
+			}
 
 			if(this.props.shouldEditProfile){
 				return(
