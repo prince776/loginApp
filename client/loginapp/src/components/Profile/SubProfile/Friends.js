@@ -1,46 +1,89 @@
-import React , {Component} from 'react';
+import React , {Component,Fragment} from 'react';
 import {Redirect} from 'react-router-dom';
+import ProfileNavbar from './ProfileNavbar.js';
 
 import './Friends.css'
 
-//Class to check some functionalities of react js
 class Friends extends Component{
 
 	state = {
 		token:'',
-		friends:[],
+		friendList:[],
+		message:'',
 	};
 
 	componentDidMount(){
 		this.setState({
-			token:localStorage.getItem('signInToken')
+			token:localStorage.getItem('signInToken'),
 		});
 	}
 
 	render(){
-		var {token,friends} = this.state;
+		var {token,friendList,message} = this.state;
+
+
 		if(token){
 
-			fetch('http://localhost:8080/api/account/profile/friends'
+			fetch('http://localhost:8080/api/account/profile/friendList'
 				,{
 					method:'POST',
 					headers:{
 						'Content-Type':'application/json',
 						'Accept':'application/json'
 					},															
-					body:{
-						token:token
-					}
+					body:JSON.stringify({
+						token:token 
+					})
 
 				}).then((res)=>res.json()).then((json)=>{
-					//retreive friends list here
+					if(json.success){
+						this.setState({
+							friendList:json.friendList,
+							message:''					
+						})
+					}else{
+						this.setState({
+							message:json.message
+						})
+					}
 				});
 
 		}
 
+
+
 		return (
 			<div>
-			<p>This is the test page</p>
+			<ProfileNavbar />
+			<hr/>
+			<p>This is the test page</p><br/>
+
+			<h3>Your Friends</h3>
+			
+			<Fragment>
+
+			<thead>
+			<tr>
+			<th>Name</th>
+			<th>Since</th>
+			</tr>
+			</thead>
+
+			<tbody>
+				
+				{friendList.map(friend => (
+					<tr key= {friend.name}>
+					<td >{friend.name}</td>
+					<td >{friend.since}</td>
+					</tr>
+				))}
+
+			</tbody>
+
+			</Fragment>
+
+			<p>{message?"friend List Fetch Message " + message:""}</p>
+
 			</div>
 		);
 	}

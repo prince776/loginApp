@@ -229,8 +229,6 @@ module.exports = (app)=>{
 
 	});
 
-	
-
 	app.post('/api/account/profile/verifyEmail',(req,res)=>{
 		var {body} = req;
 		var {code,email} = body;
@@ -238,7 +236,8 @@ module.exports = (app)=>{
 		if(code === verficationCode){
 			
 			User.find({
-				email:email
+				email:email,
+				isDeleted:false
 			},(err,previousUsers)=>{
 				if(err){
 					return sendError(res,"Server Error");
@@ -266,5 +265,46 @@ module.exports = (app)=>{
 		}
 
 	});
+
+	app.post('/api/account/profile/friendList',(req,res)=>{
+		const {body} = req;
+		const {token} = body;
+
+		if(!token){
+			return sendError(res,"Invalid Session (no Token)");
+		}
+
+		UserSession.find({
+			_id:token,
+			isDeleted:false
+		},(err,previousSessions)=>{
+			if(err){
+				return sendError(res,err);
+			}else if(previousSessions.length < 1){
+				return sendError(res,"Invalid Session(user session.find else");
+			}
+
+			const userID = previousSessions[0].userID;
+
+			User.find({
+				_id:userID,
+				isDeleted:false	
+			},(err,previousUsers)=>{
+				if(err){
+					return sendError(res,"Server Error(user.find if err)");
+				}else if(previousUsers.length < 1){
+					return sendError(res,"Invalid User(user.find else)");
+				}
+
+				const user = previousUsers[0];
+				return res.send({
+					success:true,
+					friendList:user.friendList
+				});
+
+			});
+
+		});
+	})
 
 }

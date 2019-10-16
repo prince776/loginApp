@@ -1,6 +1,19 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+Friend = new mongoose.Schema({
+	userID:{
+		type:String
+	},
+	name:{
+		type:String
+	},
+	since:{
+		type:Date,
+		default:Date.now()
+	}
+})
+
 const UserSchema = new mongoose.Schema({
 	email:{
 		type:String,
@@ -43,9 +56,11 @@ const UserSchema = new mongoose.Schema({
 		default:false
 	},
 	friendList:[{
-		type:String
+		type:Friend
 	}]
 });
+
+
 
 //methods
 UserSchema.methods.generateHash = function(password){
