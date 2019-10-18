@@ -56,7 +56,7 @@ class Friends extends Component{
 			<div>
 			<ProfileNavbar />
 			<hr/>
-			<h3>Your  Friends</h3>
+			<h3>Your Friends</h3>
 			
 			<Fragment>
 
